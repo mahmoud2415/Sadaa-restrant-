@@ -93,6 +93,8 @@ let liveCategoriesDocs = null;
 let liveProductsDocs = null;
 let appliedCoupon = null;
 let firebaseHydrationStarted = false;
+let ordersUnsubscribe = null;
+let lastOrderTimestamp = null;
 
 function toNumber(value) {
   const num = Number(value);
@@ -1500,11 +1502,25 @@ function openOptionsModal(item) {
       </div>`;
   }
 
+  // Spice Level section
+  bodyHTML += `
+    <div class="option-section">
+      <label class="extra-option-label">
+        <input type="checkbox" id="spice_opt" onchange="updateModalTotal()">
+        <div class="extra-option-card">
+          <div class="extra-check-wrap">
+            <div class="custom-checkbox"><i class="fas fa-check" style="display:none;"></i></div>
+            <span class="extra-name"><i class="fas fa-fire" style="color:var(--brand-red);margin-right:5px;"></i> حار سبايسي</span>
+          </div>
+        </div>
+      </label>
+    </div>`;
+
   // Note
   bodyHTML += `
     <div class="option-section">
       <div class="option-section-title"><i class="fas fa-pen"></i> ملاحظة خاصة (اختياري):</div>
-      <textarea id="item-note" class="form-input" rows="2" placeholder="مثلا : بدون خضار "></textarea>
+      <textarea id="item-note" class="form-input" rows="2" placeholder="مثلا :بدون فلفل  "></textarea>
     </div>`;
 
   modalBody.innerHTML = bodyHTML;
@@ -1582,8 +1598,12 @@ function submitOptionOrder() {
   if (checkedExtras.length > 0) {
     const names = [];
     checkedExtras.forEach(cb => {
-      const extra = currentProductExtras[parseInt(cb.value)];
-      if (extra) { names.push(extra.name); finalPrice += extra.price; }
+      if (cb.id === 'spice_opt') {
+        names.push('حار سبايسي');
+      } else {
+        const extra = currentProductExtras[parseInt(cb.value)];
+        if (extra) { names.push(extra.name); finalPrice += extra.price; }
+      }
     });
     finalName += ` + [${names.join(', ')}]`;
   }
@@ -1854,9 +1874,16 @@ function adminTab(tab) {
   const body = document.getElementById('admin-body');
   if (!body) return;
 
-  if (tab === 'orders') renderAdminOrders(body);
+  if (tab === 'orders') {
+    renderAdminOrders(body);
+    requestNotificationPermission();
+    startOrdersListener();
+  }
   else if (tab === 'products') renderAdminProducts(body);
   else if (tab === 'add-product') renderAddProductForm(body);
+  else {
+    stopOrdersListener();
+  }
 }
 
 async function renderAdminOrders(body) {
@@ -1920,6 +1947,35 @@ async function renderAdminOrders(body) {
   }
 }
 
+async function clearAllOrders() {
+  if (!window.firebaseReady || !window.db) {
+    showToast('❌ Firebase غير متصل');
+    return;
+  }
+
+  const confirmed = confirm('⚠️ هل أنت متأكد؟ سيتم حذف جميع الطلبات والعودة برقم الطلب إلى #1');
+  if (!confirmed) return;
+
+  try {
+    showToast('🔄 جاري حذف الطلبات...');
+    const q = window.fsQuery(window.fsCollection(window.db, 'orders'));
+    const snap = await window.fsGetDocs(q);
+
+    let deletedCount = 0;
+    for (const doc of snap.docs) {
+      await window.fsDeleteDoc(window.fsDoc(window.db, 'orders', doc.id));
+      deletedCount++;
+    }
+
+    await window.fsSetDoc(window.fsDoc(window.db, 'settings', 'orderCounter'), { count: 1 });
+
+    showToast(`✅ تم حذف ${deletedCount} طلب وإعادة تعيين العداد إلى #1`);
+    renderAdminOrders(document.querySelector('[data-tab="orders"]') || document.getElementById('admin-body'));
+  } catch (e) {
+    showToast(`❌ خطأ: ${e.message}`);
+  }
+}
+
 async function updateOrderStatus(orderId, status) {
   if (!window.firebaseReady || !window.db) return;
   try {
@@ -1927,6 +1983,99 @@ async function updateOrderStatus(orderId, status) {
     showToast('✅ تم تحديث حالة الطلب');
   } catch (e) {
     showToast('❌ فشل التحديث');
+  }
+}
+
+function startOrdersListener() {
+  if (!window.firebaseReady || !window.db || ordersUnsubscribe) return;
+
+  const q = window.fsQuery(window.fsCollection(window.db, 'orders'), window.fsOrderBy('createdAt', 'desc'));
+
+  ordersUnsubscribe = window.fsOnSnapshot(q, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === 'added') {
+        const order = change.doc.data();
+        const timestamp = order.createdAt?.toMillis?.() || Date.now();
+
+        if (lastOrderTimestamp === null) {
+          lastOrderTimestamp = timestamp;
+        } else if (timestamp > lastOrderTimestamp) {
+          lastOrderTimestamp = timestamp;
+          playNotificationSound();
+          showNotification(order);
+          showToast(`🔔 طلب جديد من ${order.customerName}! رقم الطلب: ${order.orderNumber || order.orderCode || '#'}`);
+        }
+      }
+    });
+  });
+}
+
+function stopOrdersListener() {
+  if (ordersUnsubscribe) {
+    ordersUnsubscribe();
+    ordersUnsubscribe = null;
+  }
+}
+
+function playNotificationSound() {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioContext.currentTime;
+    
+    const oscillator1 = audioContext.createOscillator();
+    const oscillator2 = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator1.connect(gainNode);
+    oscillator2.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator1.type = 'sine';
+    oscillator2.type = 'sine';
+    
+    oscillator1.frequency.value = 1000;
+    oscillator2.frequency.value = 1200;
+
+    gainNode.gain.setValueAtTime(0.5, now);
+    gainNode.gain.linearRampToValueAtTime(0.3, now + 0.1);
+    gainNode.gain.linearRampToValueAtTime(0, now + 0.4);
+
+    oscillator1.start(now);
+    oscillator2.start(now);
+    oscillator1.stop(now + 0.2);
+    oscillator2.stop(now + 0.4);
+
+    const osc3 = audioContext.createOscillator();
+    const gain2 = audioContext.createGain();
+    osc3.connect(gain2);
+    gain2.connect(audioContext.destination);
+    osc3.type = 'sine';
+    osc3.frequency.value = 1400;
+    gain2.gain.setValueAtTime(0.4, now + 0.15);
+    gain2.gain.linearRampToValueAtTime(0, now + 0.45);
+    osc3.start(now + 0.15);
+    osc3.stop(now + 0.45);
+
+  } catch (e) {
+    console.log('تنبيه: لم يتمكن من تشغيل الصوت', e);
+  }
+}
+
+function showNotification(order) {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    const notification = new Notification('🔔 طلب جديد!', {
+      body: `${order.customerName}\nالمبلغ: ${order.totalPrice || 0} ج.م`,
+      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%23e63946"/><text x="50" y="50" font-size="60" text-anchor="middle" dominant-baseline="middle" fill="white">🔔</text></svg>',
+      tag: 'new-order',
+      requireInteraction: true
+    });
+    setTimeout(() => notification.close(), 5000);
+  }
+}
+
+function requestNotificationPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
   }
 }
 
@@ -3173,6 +3322,10 @@ window.addEventListener('pageshow', event => {
 
   ensureHeroLandingState();
   forceViewportTop();
+});
+
+window.addEventListener('beforeunload', () => {
+  stopOrdersListener();
 });
 
 // renderHeroOpenStatus is defined earlier in this file (single canonical version)

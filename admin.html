@@ -1009,6 +1009,9 @@
               <button class="btn btn-ghost btn-sm" onclick="exportOrdersCSV()">
                 <i class="fas fa-download"></i> تنزيل CSV
               </button>
+              <button class="btn btn-red btn-sm" onclick="clearAllOrders()" style="background:#c1121f;color:#fff;border:none;">
+                <i class="fas fa-trash"></i> حذف جميع الطلبات
+              </button>
               <select class="form-input" style="width:auto;height:36px;font-size:.8rem" id="orders-status-filter" onchange="renderOrders()">
                 <option value="">كل الحالات</option>
                 <option value="new">جديد</option>
@@ -2339,8 +2342,7 @@ function _renderPrintPanels(o){
   html += '<div class="print-preview-panel">'
     +'<div class="print-preview-title">🧾 فاتورة العميل</div>'
     +'<div class="pp-size-toggle">'
-    +'<button class="pp-size-btn '+(size==="80"?"active":"")+'" data-size="80" onclick="setPrintSize(\'80\')">80mm</button>'
-    +'<button class="pp-size-btn '+(size==="58"?"active":"")+'" data-size="58" onclick="setPrintSize(\'58\')">58mm</button>'
+    +'<button class="pp-size-btn '+(size==="58"?"active":"active")+'" data-size="58" onclick="setPrintSize(\'58\')">58mm</button>'
     +'</div>'
     +'<div style="background:#fff;display:inline-block;border:1px solid #ccc;border-radius:3px;overflow:hidden">'
     +buildCustomerReceipt(o)
@@ -3313,6 +3315,36 @@ window.logout = function(){
   sessionStorage.removeItem('admin_auth');
   _origLogout();
 };
+
+// Delete all orders function
+async function clearAllOrders() {
+  if (!window.firebaseReady || !window.db) {
+    showToast('❌ Firebase غير متصل');
+    return;
+  }
+
+  const confirmed = confirm('⚠️ هل أنت متأكد؟ سيتم حذف جميع الطلبات والعودة برقم الطلب إلى #1');
+  if (!confirmed) return;
+
+  try {
+    showToast('🔄 جاري حذف الطلبات...');
+    const q = window.fsQuery(window.fsCol(window.db, 'orders'));
+    const snap = await window.fsGet(q);
+
+    let deletedCount = 0;
+    for (const doc of snap.docs) {
+      await window.fsDel(window.fsDoc(window.db, 'orders', doc.id));
+      deletedCount++;
+    }
+
+    await window.fsSetDoc(window.fsDoc(window.db, 'settings', 'orderCounter'), { count: 1 });
+
+    showToast(`✅ تم حذف ${deletedCount} طلب وإعادة تعيين العداد إلى #1`);
+    renderOrders();
+  } catch (e) {
+    showToast(`❌ خطأ: ${e.message}`);
+  }
+}
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
