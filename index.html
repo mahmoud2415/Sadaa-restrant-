@@ -14,7 +14,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, onSnapshot, where, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, onSnapshot, where, limit, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCjie2Psi57Md2oqbeSd4U-Hr5VsVAnNb0",
@@ -43,6 +43,7 @@
     window.fsOnSnapshot = onSnapshot;
     window.fsWhere = where;
     window.fsLimit = limit;
+    window.fsRunTransaction = runTransaction;
     window.firebaseReady = true;
     document.dispatchEvent(new Event("firebaseReady"));
   </script>

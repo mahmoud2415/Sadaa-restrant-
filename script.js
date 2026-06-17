@@ -1131,18 +1131,11 @@ function initQuickStartCarousel() {
   const scrollToCard = (index, behavior = 'smooth') => {
     const targetCard = cards[index];
     if (!targetCard) return;
-
-    const trackRect = track.getBoundingClientRect();
-    const targetRect = targetCard.getBoundingClientRect();
-    const delta = (targetRect.left + (targetRect.width / 2)) - (trackRect.left + (trackRect.width / 2));
-
-    if (Math.abs(delta) > 1) {
-      track.scrollBy({
-        left: delta,
-        behavior
-      });
-    }
-
+    targetCard.scrollIntoView({
+      behavior,
+      block: 'nearest',
+      inline: 'center'
+    });
     updateQuickStartCarouselState(cards, dots, index);
   };
 
@@ -1511,7 +1504,7 @@ function openOptionsModal(item) {
   bodyHTML += `
     <div class="option-section">
       <div class="option-section-title"><i class="fas fa-pen"></i> ملاحظة خاصة (اختياري):</div>
-      <textarea id="item-note" class="form-input" rows="2" placeholder="مثلا: بدون بصل..."></textarea>
+      <textarea id="item-note" class="form-input" rows="2" placeholder="مثلا : بدون خضار "></textarea>
     </div>`;
 
   modalBody.innerHTML = bodyHTML;
@@ -1823,7 +1816,7 @@ function showOrderResult(id, data) {
       <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <div>
-            <div style="font-weight:700;font-size:0.95rem;">طلب #${data.orderCode || id.slice(-6).toUpperCase()}</div>
+            <div style="font-weight:700;font-size:0.95rem;">طلب #${data.orderNumber || data.orderCode || id.slice(-6).toUpperCase()}</div>
             <div style="font-size:0.78rem;color:var(--text-secondary);">${data.customerName}</div>
           </div>
           <span class="status-badge status-${data.status || 'new'}">${statusInfo.label}</span>
@@ -2954,10 +2947,34 @@ const checkoutOverride = async function() {
   const total = Math.max(0, subtotal - discountValue);
   const normalizedPhone = phone.replace(/\D/g, '');
 
+  let orderNumber = 1;
+  if (window.fsRunTransaction) {
+    try {
+      await window.fsRunTransaction(window.db, async (transaction) => {
+        const counterRef = window.fsDoc(window.db, 'settings', 'orderCounter');
+        const counterSnap = await transaction.get(counterRef);
+        if (!counterSnap.exists()) {
+          transaction.set(counterRef, { count: 1 });
+          orderNumber = 1;
+        } else {
+          const nextCount = (counterSnap.data().count || 0) + 1;
+          transaction.update(counterRef, { count: nextCount });
+          orderNumber = nextCount;
+        }
+      });
+    } catch (e) {
+      console.error("Transaction failed: ", e);
+      orderNumber = Math.floor(1000 + Math.random() * 9000);
+    }
+  } else {
+    orderNumber = Math.floor(1000 + Math.random() * 9000);
+  }
+
   try {
     const orderData = {
       customerName: name,
       phone: normalizedPhone || phone,
+      customerPhone: phone,
       displayPhone: phone,
       orderType,
       address: orderType === 'delivery' ? address : '',
@@ -2973,22 +2990,13 @@ const checkoutOverride = async function() {
       subtotalPrice: subtotal,
       totalPrice: total,
       status: 'new',
-      createdAt: window.fsServerTimestamp()
+      createdAt: window.fsServerTimestamp(),
+      orderNumber: orderNumber,
+      orderCode: String(orderNumber)
     };
 
     const docRef = await window.fsAddDoc(window.fsCollection(window.db, 'orders'), orderData);
-    const orderSeed = `${Date.now()}${docRef.id}`;
-    let orderHash = 0;
-    for (let i = 0; i < orderSeed.length; i++) {
-      orderHash = ((orderHash * 31) + orderSeed.charCodeAt(i)) % 900;
-    }
-    const orderCode = String(orderHash + 100);
-    try {
-      await window.fsUpdateDoc(docRef, { orderCode });
-    } catch (e) {
-      console.error("Failed to update orderCode", e);
-    }
-    showToast(`✅ طلبك وصل للمطعم. رقم الطلب: ${orderCode}`);
+    showToast(`✅ طلبك وصل للمطعم. رقم الطلب: ${orderNumber}`);
     appliedCoupon = null;
     cart = [];
     updateCartUI();

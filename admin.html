@@ -1839,7 +1839,8 @@ function renderOrders(){
       const name=(o.customerName||'').toLowerCase();
       const phone=(o.customerPhone||'').toLowerCase();
       const id=(o.id||'').toLowerCase();
-      if(!name.includes(search)&&!phone.includes(search)&&!id.includes(search)) return false;
+      const code=String(o.orderNumber || o.orderCode || '').toLowerCase();
+      if(!name.includes(search)&&!phone.includes(search)&&!id.includes(search)&&!code.includes(search)) return false;
     }
     return true;
   });
@@ -1860,7 +1861,7 @@ function buildOrderCard(o){
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
         <div style="flex:1">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-            <span style="font-family:monospace;font-size:.75rem;color:var(--txt3)">#${o.id?.slice(0,8)||'—'}</span>
+            <span style="font-family:monospace;font-size:.75rem;color:var(--txt3)">#${o.orderNumber || o.orderCode || o.id?.slice(0,8) || '—'}</span>
             <span class="badge ${status.cls}">${status.label}</span>
             ${o.orderType==='delivery'?'<span class="tag"><i class="fas fa-motorcycle"></i> توصيل</span>':'<span class="tag"><i class="fas fa-store"></i> استلام</span>'}
           </div>
@@ -2134,7 +2135,8 @@ function _groupBySec(o){
 function _wClass(){ return _currentPrintSize==='58'?'thermal-58':'thermal-80'; }
 
 function _numericOrderCode(o){
-  const existing = String(o.orderNumber || o.orderNo || o.orderCode || '').replace(/\D/g, '');
+  if(o.orderNumber || o.orderCode) return String(o.orderNumber || o.orderCode);
+  const existing = String(o.orderNo || '').replace(/\D/g, '');
   if(existing) return existing.slice(-4);
   const raw = String(o.id || Date.now());
   let hash = 0;
