@@ -453,19 +453,42 @@
 
     /* ── PRINT STYLES — THERMAL PROFESSIONAL ── */
     @media print {
-      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
       html, body { margin:0!important; padding:0!important; background:#fff!important; }
       body > *:not(#thermal-receipt) { display: none !important; }
       #thermal-receipt {
         display: block !important;
         position: static !important;
-        width: auto !important;
-        margin: 0 auto !important;
+        width: 100% !important;
+        margin: 0 !important;
         padding: 0 !important;
         background: #fff;
-        text-align: center !important;
+        text-align: right !important;
       }
-      #thermal-receipt * { visibility: visible !important; }
+      #thermal-receipt * {
+        visibility: visible !important;
+        color: #000 !important;
+      }
+      #thermal-receipt .thermal-wrap {
+        margin: 0 !important;
+      }
+      #thermal-receipt img {
+        filter: grayscale(100%) contrast(200%) !important;
+      }
+      /* Force bold fonts for critical receipt information to print clearly */
+      #thermal-receipt .th-bold,
+      #thermal-receipt th,
+      #thermal-receipt .th-rest-name,
+      #thermal-receipt .th-order-num-val,
+      #thermal-receipt .th-section-name,
+      #thermal-receipt .th-kitchen-item-qty,
+      #thermal-receipt .th-kitchen-item-name,
+      #thermal-receipt .th-cust-name {
+        font-weight: bold !important;
+      }
       .thermal-page-break {
         display: block;
         page-break-before: always;
@@ -475,7 +498,7 @@
         padding: 0;
       }
       .no-print { display: none !important }
-      @page { margin: 4mm 2mm; padding: 0; }
+      @page { margin: 0 !important; size: auto; }
     }
 
     /* ── THERMAL RECEIPT STYLES ── */
@@ -855,7 +878,7 @@
     <div id="login-err"></div>
     <div class="field">
       <label>اسم المستخدم</label>
-      <input type="text" id="login-user" placeholder="admin" autocomplete="username">
+      <input type="text" id="login-user" placeholder="" autocomplete="username">
     </div>
     <div class="field">
       <label>كلمة المرور</label>
@@ -1967,7 +1990,7 @@ function closeOrderModal(){
 // 🖨️ THERMAL PRINT SYSTEM v2
 // ==========================================
 
-let _currentPrintSize = '80';
+let _currentPrintSize = '58';
 let _restSettings = { name:'مطعم السعادة', phone:'01027450811', address:'العريش — شارع 23 يوليو', qrUrl:'' };
 
 async function _loadRestSettings(){
@@ -2307,6 +2330,7 @@ function closePrintPreview(){
 
 function setPrintSize(size){
   _currentPrintSize = size;
+  localStorage.setItem('printSize', size);
   document.querySelectorAll('.pp-size-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.size===size);
   });
@@ -2342,7 +2366,8 @@ function _renderPrintPanels(o){
   html += '<div class="print-preview-panel">'
     +'<div class="print-preview-title">🧾 فاتورة العميل</div>'
     +'<div class="pp-size-toggle">'
-    +'<button class="pp-size-btn '+(size==="58"?"active":"active")+'" data-size="58" onclick="setPrintSize(\'58\')">58mm</button>'
+    +'<button class="pp-size-btn '+(size==="80"?"active":"")+'" data-size="80" onclick="setPrintSize(\'80\')">80mm</button>'
+    +'<button class="pp-size-btn '+(size==="58"?"active":"")+'" data-size="58" onclick="setPrintSize(\'58\')">58mm</button>'
     +'</div>'
     +'<div style="background:#fff;display:inline-block;border:1px solid #ccc;border-radius:3px;overflow:hidden">'
     +buildCustomerReceipt(o)
@@ -2512,6 +2537,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(saved === '1'){
     _autoPrintEnabled = true;
     _updateAutoPrintUI();
+  }
+  const savedSize = localStorage.getItem('printSize');
+  if(savedSize === '58' || savedSize === '80'){
+    _currentPrintSize = savedSize;
   }
 });
 

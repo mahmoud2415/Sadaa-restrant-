@@ -1,4 +1,4 @@
-/*=========================== */
+﻿/*=========================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@500;700;800&family=Cairo:wght@300;400;500;600;700;900&display=swap');
 
@@ -6,14 +6,14 @@
    DESIGN TOKENS
    ========================================== */
 :root {
-  /* ─── الخلفيات ─── */
+  /* â”€â”€â”€ Ø§Ù„Ø®Ù„ÙÙŠØ§Øª â”€â”€â”€ */
   --bg-page:    #F5F3EF;
   --bg-card:    #FFFFFF;
   --bg-raised:  #EDEAE4;
   --bg-input:   #FAF9F7;
   --bg-modal:   #FFFFFF;
 
-  /* ─── البراند ─── */
+  /* â”€â”€â”€ Ø§Ù„Ø¨Ø±Ø§Ù†Ø¯ â”€â”€â”€ */
   --red:        #C13A43;
   --red-hover:  #A83038;
   --red-soft:   rgba(200,50,58,.09);
@@ -22,26 +22,26 @@
   --amber:      #A98532;
   --amber-soft: rgba(176,125,16,.1);
 
-  /* ─── النصوص ─── */
+  /* â”€â”€â”€ Ø§Ù„Ù†ØµÙˆØµ â”€â”€â”€ */
   --txt-h:  #141414;
   --txt-b:  #3A3A3A;
   --txt-s:  #767676;
   --txt-m:  #ABABAB;
   --txt-inv:#FFFFFF;
 
-  /* ─── الحدود ─── */
+  /* â”€â”€â”€ Ø§Ù„Ø­Ø¯ÙˆØ¯ â”€â”€â”€ */
   --border:    rgba(0,0,0,.07);
   --border-md: rgba(0,0,0,.11);
   --border-lg: rgba(0,0,0,.16);
 
-  /* ─── الشكل ─── */
+  /* â”€â”€â”€ Ø§Ù„Ø´ÙƒÙ„ â”€â”€â”€ */
   --r-xs:  8px;
   --r-sm:  12px;
   --r-md:  16px;
   --r-lg:  22px;
   --r-pill:50px;
 
-  /* ─── الظلال ─── */
+  /* â”€â”€â”€ Ø§Ù„Ø¸Ù„Ø§Ù„ â”€â”€â”€ */
   --sh-sm:   0 1px  8px rgba(0,0,0,.07);
   --sh-md:   0 4px 20px rgba(0,0,0,.10);
   --sh-lg:   0 8px 36px rgba(0,0,0,.13);
@@ -552,13 +552,20 @@ body {
   }
 }
 
-@media (min-width: 920px) {
+@media (min-width: 1024px) {
   body #products-view .products-grid {
     grid-auto-flow: initial !important;
     grid-auto-columns: initial !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     overflow: visible !important;
-    padding: 0 !important;
+    padding: 0 16px !important;
+    gap: 16px !important;
+  }
+}
+
+@media (min-width: 1400px) {
+  body #products-view .products-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   }
 }
 
@@ -697,7 +704,7 @@ button { font-family: inherit; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ==========================================
-   HERO — إعادة بناء كاملة واضحة
+   HERO â€” Ø¥Ø¹Ø§Ø¯Ø© Ø¨Ù†Ø§Ø¡ ÙƒØ§Ù…Ù„Ø© ÙˆØ§Ø¶Ø­Ø©
    ========================================== */
 .hero-section {
   position: relative;
@@ -1064,7 +1071,7 @@ button { font-family: inherit; }
 .btn-primary:hover  { background: linear-gradient(135deg, #c53e47, #aa2931); transform: translateY(-2px); box-shadow: 0 18px 34px rgba(200,50,58,.34); }
 .btn-primary:active { transform: scale(.97); }
 
-/* secondary زجاجي (على الهيرو) */
+/* secondary Ø²Ø¬Ø§Ø¬ÙŠ (Ø¹Ù„Ù‰ Ø§Ù„Ù‡ÙŠØ±Ùˆ) */
 .btn-secondary {
   display: inline-flex; align-items: center; justify-content: center;
   gap: 7px;
@@ -1090,7 +1097,7 @@ button { font-family: inherit; }
 .btn-secondary:hover  { background: rgba(255,255,255,.95); border-color: rgba(193,58,67,.14); color: var(--red); }
 .btn-secondary:active { transform: scale(.97); }
 
-/* secondary خارج الهيرو */
+/* secondary Ø®Ø§Ø±Ø¬ Ø§Ù„Ù‡ÙŠØ±Ùˆ */
 main .btn-secondary,
 .cart-panel     .btn-secondary,
 .tracking-panel .btn-secondary,
@@ -3726,7 +3733,7 @@ footer { background: #161616; border-top: 1px solid rgba(255,255,255,.06); paddi
 }
 
 .product-price::before {
-  content: 'سعر البداية';
+  content: 'Ø³Ø¹Ø± Ø§Ù„Ø¨Ø¯Ø§ÙŠØ©';
   font-family: 'Cairo', sans-serif;
   font-size: .68rem;
   font-weight: 700;
@@ -4383,7 +4390,7 @@ footer { background: #161616; border-top: 1px solid rgba(255,255,255,.06); paddi
 }
 
 /* ==========================================
-   HERO (Poster) — matches provided design
+   HERO (Poster) â€” matches provided design
    Culinary Experience System tokens
    ========================================== */
 :root {
@@ -5062,7 +5069,7 @@ body .hero-sheet {
 }
 
 /* ==========================================
-   HERO FINAL LOCK — Reference Match
+   HERO FINAL LOCK â€” Reference Match
    ========================================== */
 body .hero-section {
   background: #fafafa !important;
@@ -5462,7 +5469,7 @@ body .btn-secondary.hero-call-btn i {
 }
 
 /* ==========================================
-   HERO EXACT MATCH — Reference Lock 2
+   HERO EXACT MATCH â€” Reference Lock 2
    ========================================== */
 body {
   padding-bottom: 108px !important;
@@ -6005,7 +6012,7 @@ body .nav-cart-badge.hidden-badge {
 }
 
 /* ==========================================
-   HERO REFERENCE LOCK — Original Match
+   HERO REFERENCE LOCK â€” Original Match
    ========================================== */
 body {
   padding-bottom: 92px !important;
@@ -7882,12 +7889,12 @@ body #popular-items-grid {
   display: none !important;
 }
 /* ============================================================
-   🍔 كروت المنتجات — ريديزاين 2026
-   4 كروت في الشاشة (2×2)، تصميم عصري وأنيق
-   أضف هذا الملف آخر ملفات CSS في index.html
+   ðŸ” ÙƒØ±ÙˆØª Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª â€” Ø±ÙŠØ¯ÙŠØ²Ø§ÙŠÙ† 2026
+   4 ÙƒØ±ÙˆØª ÙÙŠ Ø§Ù„Ø´Ø§Ø´Ø© (2Ã—2)ØŒ ØªØµÙ…ÙŠÙ… Ø¹ØµØ±ÙŠ ÙˆØ£Ù†ÙŠÙ‚
+   Ø£Ø¶Ù Ù‡Ø°Ø§ Ø§Ù„Ù…Ù„Ù Ø¢Ø®Ø± Ù…Ù„ÙØ§Øª CSS ÙÙŠ index.html
    ============================================================ */
 
-/* ─── Override: Grid — 2 columns compact ─── */
+/* â”€â”€â”€ Override: Grid â€” 2 columns compact â”€â”€â”€ */
 #products-view .products-grid,
 .products-grid {
   display: grid !important;
@@ -7912,7 +7919,7 @@ body #popular-items-grid {
   }
 }
 
-/* ─── Skeleton override to match new layout ─── */
+/* â”€â”€â”€ Skeleton override to match new layout â”€â”€â”€ */
 .skeleton-card {
   border-radius: 16px !important;
   overflow: hidden;
@@ -7927,7 +7934,7 @@ body #popular-items-grid {
   padding: 10px 10px 12px !important;
 }
 
-/* ─── NEW PRODUCT CARD ─── */
+/* â”€â”€â”€ NEW PRODUCT CARD â”€â”€â”€ */
 .pcard {
   position: relative;
   background: #ffffff;
@@ -7954,7 +7961,7 @@ body #popular-items-grid {
   transform: scale(.97);
 }
 
-/* ─── Image area ─── */
+/* â”€â”€â”€ Image area â”€â”€â”€ */
 .pcard__media {
   position: relative;
   width: 100%;
@@ -8029,7 +8036,7 @@ body #popular-items-grid {
   gap: 3px;
 }
 
-/* ─── Body ─── */
+/* â”€â”€â”€ Body â”€â”€â”€ */
 .pcard__body {
   padding: 9px 10px 10px;
   display: flex;
@@ -8063,7 +8070,7 @@ body #popular-items-grid {
   text-overflow: ellipsis;
 }
 
-/* ─── Footer: price + button ─── */
+/* â”€â”€â”€ Footer: price + button â”€â”€â”€ */
 .pcard__foot {
   display: flex;
   align-items: center;
@@ -8135,7 +8142,7 @@ body #popular-items-grid {
   width: fit-content;
 }
 
-/* ─── Entrance animation ─── */
+/* â”€â”€â”€ Entrance animation â”€â”€â”€ */
 @keyframes pcard-in {
   from {
     opacity: 0;
@@ -8158,7 +8165,7 @@ body #popular-items-grid {
 .pcard:nth-child(7)  { animation-delay: 0.24s; }
 .pcard:nth-child(8)  { animation-delay: 0.28s; }
 
-/* ─── Empty state ─── */
+/* â”€â”€â”€ Empty state â”€â”€â”€ */
 .pcard-empty {
   grid-column: 1 / -1;
   text-align: center;
@@ -8176,11 +8183,11 @@ body #popular-items-grid {
   font-size: 0.88rem;
 }
 /* ====================================================
-   مطعم السعادة — CSS Fixes Patch
-   يُضاف في آخر style.css أو كـ <link> منفصل
+   Ù…Ø·Ø¹Ù… Ø§Ù„Ø³Ø¹Ø§Ø¯Ø© â€” CSS Fixes Patch
+   ÙŠÙØ¶Ø§Ù ÙÙŠ Ø¢Ø®Ø± style.css Ø£Ùˆ ÙƒÙ€ <link> Ù…Ù†ÙØµÙ„
    ==================================================== */
 
-/* 1. مواعيد العمل — تبديل للثيم الفاتح بدل الداكن */
+/* 1. Ù…ÙˆØ§Ø¹ÙŠØ¯ Ø§Ù„Ø¹Ù…Ù„ â€” ØªØ¨Ø¯ÙŠÙ„ Ù„Ù„Ø«ÙŠÙ… Ø§Ù„ÙØ§ØªØ­ Ø¨Ø¯Ù„ Ø§Ù„Ø¯Ø§ÙƒÙ† */
 #business-hours-card {
   margin: 24px 16px 100px !important;
   background: #fff !important;
@@ -8210,7 +8217,7 @@ body #popular-items-grid {
   color: var(--txt-h) !important;
 }
 
-/* 2. السلة — إصلاح التمرير الكامل */
+/* 2. Ø§Ù„Ø³Ù„Ø© â€” Ø¥ØµÙ„Ø§Ø­ Ø§Ù„ØªÙ…Ø±ÙŠØ± Ø§Ù„ÙƒØ§Ù…Ù„ */
 #cart-panel,
 .cart-panel {
   display: flex !important;
@@ -8239,7 +8246,7 @@ body #popular-items-grid {
   border-top: 1px solid var(--border) !important;
 }
 
-/* 3. كروت الأقسام — ضمان الـ grid صح */
+/* 3. ÙƒØ±ÙˆØª Ø§Ù„Ø£Ù‚Ø³Ø§Ù… â€” Ø¶Ù…Ø§Ù† Ø§Ù„Ù€ grid ØµØ­ */
 .sections-grid--premium {
   display: grid !important;
   grid-template-columns: repeat(2, 1fr) !important;
@@ -8257,7 +8264,7 @@ body #popular-items-grid {
   }
 }
 
-/* 4. reference-section-card — تصحيح ارتفاع الصورة */
+/* 4. reference-section-card â€” ØªØµØ­ÙŠØ­ Ø§Ø±ØªÙØ§Ø¹ Ø§Ù„ØµÙˆØ±Ø© */
 .reference-section-card {
   position: relative;
   border-radius: 18px;
@@ -8360,12 +8367,12 @@ body #popular-items-grid {
   text-shadow: 0 0 6px rgba(255,215,0,0.6);
 }
 
-/* 5. Hero hidden state — يخفي الهيرو لما يفتح المنيو */
+/* 5. Hero hidden state â€” ÙŠØ®ÙÙŠ Ø§Ù„Ù‡ÙŠØ±Ùˆ Ù„Ù…Ø§ ÙŠÙØªØ­ Ø§Ù„Ù…Ù†ÙŠÙˆ */
 .reference-hero-section.is-hidden-in-menu {
   display: none !important;
 }
 
-/* 6. Sticky menu tools — ضمان z-index صح */
+/* 6. Sticky menu tools â€” Ø¶Ù…Ø§Ù† z-index ØµØ­ */
 .menu-sticky-stack {
   position: sticky;
   top: 0;
@@ -8374,7 +8381,7 @@ body #popular-items-grid {
   padding: 12px 0 4px;
 }
 
-/* 7. تحسين الـ toast */
+/* 7. ØªØ­Ø³ÙŠÙ† Ø§Ù„Ù€ toast */
 /* .notification-toast {
   position: fixed;
   bottom: 100px;
@@ -8401,7 +8408,7 @@ body #popular-items-grid {
   transform: translateX(-50%) translateY(0);
 } */
 
-/* 8. تحسين رسالة السلة الفاضية */
+/* 8. ØªØ­Ø³ÙŠÙ† Ø±Ø³Ø§Ù„Ø© Ø§Ù„Ø³Ù„Ø© Ø§Ù„ÙØ§Ø¶ÙŠØ© */
 .empty-cart {
   display: flex;
   flex-direction: column;
@@ -8418,7 +8425,7 @@ body #popular-items-grid {
   margin-bottom: 4px;
 }
 
-/* 9. إصلاح z-index الـ modals فوق بعضها */
+/* 9. Ø¥ØµÙ„Ø§Ø­ z-index Ø§Ù„Ù€ modals ÙÙˆÙ‚ Ø¨Ø¹Ø¶Ù‡Ø§ */
 .modal-backdrop,
 #options-backdrop { z-index: 300 !important; }
 .options-modal    { z-index: 301 !important; }
@@ -8430,7 +8437,7 @@ body #popular-items-grid {
 .notification-toast  { z-index: 9000 !important; }
 #page-loader         { z-index: 9999 !important; }
 
-/* 10. Admin panel — إصلاح الثيم الداكن يظهر صح */
+/* 10. Admin panel â€” Ø¥ØµÙ„Ø§Ø­ Ø§Ù„Ø«ÙŠÙ… Ø§Ù„Ø¯Ø§ÙƒÙ† ÙŠØ¸Ù‡Ø± ØµØ­ */
 .admin-panel {
   position: fixed !important;
   inset: 0 !important;
@@ -8492,7 +8499,7 @@ body #popular-items-grid {
   font-weight: 600 !important;
 }
 
-/* 11. Final layout cleanup — stabilize hero width/height and remove side gaps */
+/* 11. Final layout cleanup â€” stabilize hero width/height and remove side gaps */
 body .reference-hero-section {
   height: auto !important;
   min-height: 0 !important;
@@ -8581,7 +8588,7 @@ body .sections-grid.sections-grid--premium .reference-section-card {
   }
 }
 
-/* 13. Desktop/tablet shell — keep the experience app-like instead of stretching edge to edge */
+/* 13. Desktop/tablet shell â€” keep the experience app-like instead of stretching edge to edge */
 @media (min-width: 768px) {
   body .reference-hero-section,
   body #menu-section,
@@ -11571,5 +11578,123 @@ body.is-section-view #products-view .pcard-empty {
     margin-top: 24px !important;
     margin-bottom: 118px !important;
     border-radius: 0 0 30px 30px !important;
+  }
+}
+
+/* ==========================================
+   DESKTOP RESPONSIVENESS FIXES (1024px+)
+   ========================================== */
+
+@media (min-width: 1024px) {
+  /* Main content max width */
+  #products-view,
+  .site-shell,
+  .reference-hero-shell {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  /* Products grid: 3 columns on medium desktop */
+  .products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+    padding: 0 20px !important;
+  }
+
+  /* Sections grid: 4 columns */
+  .sections-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 0 20px;
+  }
+
+  /* Better spacing for product cards */
+  .product-card {
+    min-height: 420px;
+  }
+
+  /* Adjust hero for desktop */
+  .reference-hero-surface {
+    min-height: min(650px, calc(100vh - 120px));
+  }
+
+  /* Topbar visibility */
+  .site-topbar {
+    display: block !important;
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    padding: 12px 20px 0;
+  }
+
+  .site-topbar__inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 24px;
+    padding: 14px 16px;
+  }
+
+  .site-topbar__nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .site-topbar__link {
+    display: inline-block;
+    padding: 8px 14px;
+    color: #6b5d50;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .site-topbar__link:hover {
+    background: rgba(193, 58, 67, 0.08);
+    color: #c13a43;
+  }
+
+  .site-topbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  /* Hide mobile elements */
+  .site-topbar__menu-toggle,
+  .site-topbar__backdrop,
+  .site-topbar__mobile-panel,
+  .site-topbar__mobile-shortcuts {
+    display: none !important;
+  }
+}
+
+/* Large desktop (1400px+) */
+@media (min-width: 1400px) {
+  .products-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+  }
+
+  .sections-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+  }
+
+  #products-view,
+  .site-shell,
+  .reference-hero-shell {
+    max-width: 1440px;
+  }
+
+  .site-topbar__inner {
+    grid-template-columns: auto 1fr 1fr auto;
+    gap: 32px;
+  }
+
+  .reference-hero-surface {
+    min-height: min(700px, calc(100vh - 120px));
   }
 }
